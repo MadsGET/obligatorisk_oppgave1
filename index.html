@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width">
+	<title>QUnit Example</title>
+	<link rel="stylesheet" href="https://code.jquery.com/qunit/qunit-2.9.2.css">
+</head>
+<body>
+	<div id="qunit"></div>
+	<div id="qunit-fixture"></div>
+	<script src="https://code.jquery.com/qunit/qunit-2.9.2.js"></script>
+	<script src="lib.js"></script>
+	<script>
+
+		//En unit test som viser at funksjonen returnerer true for en gyldig dato.
+		QUnit.test("Dato Sjekk - '03.04.2020'", function (assert) {
+			const actual = dateLengthValid('03.04.2020');
+			const expected = true;
+			assert.equal(actual, expected, 'Sendte: 03.04.2020 Forventet: True');
+		});
+
+		// Lengden er ikke 10
+		QUnit.test("Dato Lengde Sjekk - '03.04.202'", function (assert) {
+			const actual = dateLengthValid('03.04.202');
+			const expected = true;
+			assert.equal(actual, expected);
+		});
+
+		// det er ikke punktum i begge de rette posisjonene
+		QUnit.test("Dato punktum sjekk - '0.304.2020'", function (assert) {
+			const actual = dateFormatValid('0.304.2020');
+			const expected = true;
+			assert.equal(actual, expected);
+		});
+
+	</script>
+</body>
+</html>
