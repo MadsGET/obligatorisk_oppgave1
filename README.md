@@ -1,0 +1,2 @@
+# obligatorisk_oppgave1
+ 
