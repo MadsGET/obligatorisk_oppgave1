@@ -1,76 +1,37 @@
-var monthNames = ['January', 'Feburary', 'March', 'April', 'May', 'June',
-		'July', 'August', 'September', 'October', 'November', 'Desember'];
-var monthBoundaryLimit = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
-
-// Debug only
-function logMonthNameAndLimit()
-{
-	for (var i = 0; i < 12; i++)
-	{
-		console.log(monthNames[i] + ' range: ' + monthBoundaryLimit[i]);
-	}
-}
-
-// Hoved funksjon som sjekker om dato er gyldig.
+// Hovedfunksjon som sjekker om dato er gyldig.
 function isDateValid(date)
 {
-	// SEPERARE TEKST OG INTS
-	// Inspisere tekst først
-	// Ints etterpå
-	// check bools
-	// check leap
+	// Vi setter lengden per måned i en array så det er lett å hente. (Spesielt untak skjer for februar).
+	const monthBoundaryLimit = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
 
-
-	// Guard clause: Hvis formatering eller lengde er ugyldig for date.
-	if (!dateLengthValid(date) || !dateFormatValid(date))
+	// Hvis formatering eller lengde er gyldig for date verdi.
+	if (checkLength(date, 10) && dateFormatValid(date))
 	{
-		return false;
+		// Vi henter disse etter formaterings og lengde sjekk sånn at vi ikke prøver å hente en null verdi.
+		var dayValue = date.slice(0, 2);
+		var monthValue = date.slice(3, 5);
+		var yearValue = date.slice(6, 10);
+
+		// Sjekk lengden for hver tekst verdi.
+		if (checkLength(dayValue, 2) && checkLength(monthValue, 2) && checkLength(yearValue, 4))
+		{
+			// Sjekk om hver del av datoen er gyldig til sin respektive rekkevidde, og lengde på teksten.
+			var dayValid = (checkRange(1, monthBoundaryLimit[monthValue - 1], dayValue)) ? true : false;
+			var monthValid = (checkRange(1, 12, monthValue)) ? true : false;
+			var yearValid = (checkRange(0, 9999, yearValue)) ? true : false;
+
+			// Om dato er gyldig, eller om vi har en gyldig skuddår dato.
+			if (dayValid && monthValid && yearValid || dayValue == 29 && monthValue == 2 && isLeapYear(parseInt(yearValue)))
+			{
+				return true;
+			}
+		}
 	}
 
-	// Del opp hver bit av teksten, og sørg for at det er et tall.
-	var dayValue = parseInt(date.slice(0, 2));	//console.log(day);
-	var monthValue = parseInt(date.slice(3, 5)); //console.log(month);
-	var yearValue = parseInt(date.slice(6, 10)); //console.log(year);
-
-	// Sjekk at dag og måned er størelse 2 i lengde, og år er størelse 4 i lengde.
-
-	// Sjekk om hver del av datoen er gyldig til sin respektive rekkevidde.
-	var dayValid = (checkRange(1, monthBoundaryLimit[monthValue - 1], dayValue) && checkLength(dayValue, 2)) ? true : false;
-	var monthValid = (checkRange(1, 12, monthValue) && checkLength(monthValue, 2)) ? true : false;
-	var yearValid = (checkRange(0, 9999, yearValue) && checkLength(yearValue, 4)) ? true : false;
-
-	console.log('Day: ' + dayValid);
-	console.log('Month: ' + monthValid);
-	console.log('Year: ' + yearValid);
-
-	// Sjekk skuddår først, deretter standard dato sjekk.
-	if (dayValue == 29 && monthValue == 2 && yearValid && isLeapYear(yearValue))
-	{
-		//console.log('Skuddår!');
-		return true;
-	}
-	else if (dayValid && monthValid && yearValid)
-	{
-		//console.log('Vanlig år');
-		return true;
-	}
-	else
-	{
-		return false;
-	}
-
-	//console.log('Day = ' + dayValid);
-	//console.log('Month = ' + monthValid);
-	//console.log('Year = ' + yearValid);
+	return false;
 }
 
-// Er lengden på teksten gyldig?
-function dateLengthValid(date)
-{
-	return (date.length == 10) ? true : false;
-}
-
-// Er teksten markert riktig?
+// Er teksten formatert riktig?
 function dateFormatValid(text)
 {
 	return (text.substring(2, 3) == '.' && text.substring(5, 6) == '.') ? true : false;
@@ -82,9 +43,10 @@ function checkLength(text, expectedLength)
 	return (text.length == expectedLength) ? true : false;
 }
 
-// Sjeker en verdi opp mot en satt rekkevidde (min/max).
+// Sjekker om en verdi er innenfor min/max verdien.
 function checkRange(minimum, maximum, value)
 {
+	value = parseInt(value);
 	return (value >= minimum && value <= maximum) ? true : false;
 }
 
