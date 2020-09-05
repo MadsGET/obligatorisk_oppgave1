@@ -15,7 +15,7 @@ function isDateValid(date)
 		// Sjekk lengden for hver tekst verdi.
 		if (checkLength(dayValue, 2) && checkLength(monthValue, 2) && checkLength(yearValue, 4))
 		{
-			// Sjekk om hver del av datoen er gyldig til sin respektive rekkevidde, og lengde på teksten.
+			// Sjekk om hver del av datoen er gyldig til sin respektive rekkevidde.
 			var dayValid = (checkRange(1, monthBoundaryLimit[monthValue - 1], dayValue)) ? true : false;
 			var monthValid = (checkRange(1, 12, monthValue)) ? true : false;
 			var yearValid = (checkRange(0, 9999, yearValue)) ? true : false;
